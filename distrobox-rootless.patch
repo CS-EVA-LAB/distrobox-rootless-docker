@@ -1,0 +1,57 @@
+diff -ruN original/distrobox-create bin/distrobox-create
+--- original/distrobox-create	2024-08-11 21:22:15.657104792 +0800
++++ bin/distrobox-create	2024-08-11 21:22:46.516753609 +0800
+@@ -937,9 +937,9 @@
+ 	--entrypoint /usr/bin/entrypoint
+ 	${container_image}
+ 		--verbose
+-		--name \"${container_user_name}\"
+-		--user ${container_user_uid}
+-		--group ${container_user_gid}
++		--name root
++		--user 0
++		--group 0
+ 		--home \"${container_user_custom_home:-"${container_user_home}"}\"
+ 		--init \"${init}\"
+ 		--nvidia \"${nvidia}\"
+diff -ruN original/distrobox-enter bin/distrobox-enter
+--- original/distrobox-enter	2024-08-11 20:44:21.847629493 +0800
++++ bin/distrobox-enter	2024-08-11 22:41:50.913434073 +0800
+@@ -83,7 +83,7 @@
+ # Defaults
+ container_command=""
+ # by default we use getent to get the login shell of the user and use that
+-container_command_user="$(echo "${USER}" | sed 's|\\|\\\\|g')"
++container_command_user="$(echo root | sed 's|\\|\\\\|g')"
+ container_command_login="/bin/sh -c \"\\\$(getent passwd ${container_command_user} | cut -f 7 -d :) -l\""
+ container_image_default="registry.fedoraproject.org/fedora-toolbox:39"
+ container_manager="autodetect"
+@@ -398,7 +398,7 @@
+ 		fi
+ 	else
+ 		result_command="${result_command}
+-			--user=\"${USER}\""
++			--user='root'"
+ 	fi
+ 
+ 	# For some usage, like use in service, or launched by non-terminal
+@@ -441,7 +441,7 @@
+ 	set +o xtrace
+ 	# disable logging for this snippet, or it will be too talkative.
+ 	for i in $(printenv | grep '=' | grep -Ev ' |"|`|\$' |
+-		grep -Ev '^(CONTAINER_ID|HOST|HOSTNAME|HOME|PATH|PROFILEREAD|SHELL|XDG_SEAT|XDG_VTNR|XDG_.*_DIRS|^_)'); do
++		grep -Ev '^(CONTAINER_ID|HOST|HOSTNAME|HOME|PATH|PROFILEREAD|USER|LOGNAME|SHELL|XDG_SEAT|XDG_VTNR|XDG_.*_DIRS|^_)'); do
+ 		# We filter the environment so that we do not have strange variables,
+ 		# multiline or containing spaces.
+ 		# We also NEED to ignore the HOME variable, as this is set at create time
+@@ -450,6 +450,10 @@
+ 			--env \"${i}\""
+ 	done
+ 
++	result_command="${result_command}
++		--env \"LOGNAME=root\"
++		--env \"USER=root\""
++
+ 	# Start with the $PATH set in the container's config
+ 	container_paths="${container_path:-""}"
+ 	# Ensure the standard FHS program paths are in PATH environment
