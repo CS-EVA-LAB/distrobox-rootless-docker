@@ -11,7 +11,15 @@ Also, the possibility of using software that is newer than the base system.
 There are two options:
 1. Download the original distrobox
   
-    Please refer to the Distrobox [installation page](https://distrobox.it/#installation).
+    Please refer to the Distrobox [installation page](https://distrobox.it/#installation). 
+    You also have to download the patch file at [distrobox-rootless.patch](https://raw.githubusercontent.com/CS-EVA-LAB/distrobox-rootless-docker/master/distrobox-rootless.patch).
+
+    After downloading, run the patch command to patch the executables:
+
+    ```
+    cd ~/.local/bin
+    patch < distrobox-rootless.patch
+    ```
 
 2.  Use the version provided in this repo
 
