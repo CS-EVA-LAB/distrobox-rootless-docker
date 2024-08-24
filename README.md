@@ -96,12 +96,11 @@ distrobox create --image ubuntu:24.04 --name "YOUR CONTAINER NAME" --hostname "Y
 distrobox enter "YOUR_CONTAINER_NAME"
 ```
 
-### **Note**
 
-If you plan on continue running the docker container after you log out, and you don't want systemd to kill all processes under `user*.slice`, there are two options:
+> ### **⚠️ Note ⚠️**
+>If you plan on continue running the docker container after you log out, and you don't want systemd to kill all processes under `user*.slice`, there are two options:
+>   1. leave a tmux session open on the host (since there is at least one user logged in the system, systemd won't kill the user session).
+>   2. use `loginctl enable-linger` on the current user.
 
-1. leave a tmux session open on the host (since there is at least one user logged in the system, systemd won't kill the user session).
-
-2. use `loginctl enable-linger` on the current user.
 
 # Enjoy being **root/God** !
